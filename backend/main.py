@@ -41,7 +41,6 @@ async def health():
     stop=stop_after_attempt(5)
 )
 async def run_agent(runner, user_id, session_id, user_message):
-    from google.adk.runners import Runner
     response_text = ""
     async for event in runner.run_async(
         user_id=user_id,
@@ -50,11 +49,7 @@ async def run_agent(runner, user_id, session_id, user_message):
     ):
         if event.is_final_response():
             if event.content and event.content.parts:
-                text_parts = [
-                    p.text for p in event.content.parts
-                    if hasattr(p, "text") and p.text
-                ]
-                response_text = " ".join(text_parts)
+                response_text = event.content.parts[0].text
     return response_text
 
 @app.post("/query", response_model=QueryResponse)
@@ -80,7 +75,6 @@ async def query(request: QueryRequest):
         )
 
         user_message = Content(parts=[Part(text=request.message)])
-
         response_text = await run_agent(runner, request.user_id, session_id, user_message)
 
         itinerary = None
@@ -89,10 +83,9 @@ async def query(request: QueryRequest):
             end = response_text.rfind("}") + 1
             if start != -1 and end > start:
                 itinerary = json.loads(response_text[start:end])
-                await save_plan(
+                save_plan(
                     user_id=request.user_id,
                     query=request.message,
-                    intent={},
                     itinerary=itinerary,
                     scores=itinerary.get("scores", {})
                 )
@@ -119,7 +112,7 @@ async def save_to_calendar(itinerary: dict):
 @app.get("/plans/{user_id}")
 async def get_plans(user_id: str):
     try:
-        plans = await get_past_plans(user_id)
+        plans = get_past_plans(user_id)
         return {"plans": plans}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

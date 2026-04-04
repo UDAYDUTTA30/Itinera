@@ -1,0 +1,74 @@
+sources:
+  itinera-db:
+    kind: alloydb-postgres
+    project: itinera-genai
+    region: us-central1
+    cluster: itinera-cluster
+    instance: itinera-primary
+    database: itinera_db
+    user: postgres
+    password: Itinera@2026
+
+tools:
+  save-plan:
+    kind: postgres-sql
+    source: itinera-db
+    description: Save a completed itinerary plan to the database
+    parameters:
+      - name: user_id
+        type: string
+        description: The user identifier
+      - name: query
+        type: string
+        description: The original user query
+      - name: itinerary
+        type: string
+        description: The itinerary JSON as a string
+      - name: scores
+        type: string
+        description: The scores JSON as a string
+    statement: |
+      INSERT INTO plans (user_id, query, intent, itinerary, scores)
+      VALUES ($1, $2, '{}', $3::jsonb, $4::jsonb);
+
+  get-past-plans:
+    kind: postgres-sql
+    source: itinera-db
+    description: Retrieve past plans for a user
+    parameters:
+      - name: user_id
+        type: string
+        description: The user identifier
+    statement: |
+      SELECT query, itinerary, created_at
+      FROM plans
+      WHERE user_id = $1
+      ORDER BY created_at DESC
+      LIMIT 5;
+
+  get-user-preferences:
+    kind: postgres-sql
+    source: itinera-db
+    description: Get stored preferences for a user
+    parameters:
+      - name: user_id
+        type: string
+        description: The user identifier
+    statement: |
+      SELECT preferences FROM users WHERE id = $1;
+
+  save-user-preferences:
+    kind: postgres-sql
+    source: itinera-db
+    description: Save or update user preferences
+    parameters:
+      - name: user_id
+        type: string
+        description: The user identifier
+      - name: preferences
+        type: string
+        description: Preferences JSON as a string
+    statement: |
+      INSERT INTO users (id, preferences)
+      VALUES ($1, $2::jsonb)
+      ON CONFLICT (id) DO UPDATE SET preferences = $2::jsonb;

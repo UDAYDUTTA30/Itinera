@@ -1,0 +1,5 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '--no-cache', '--platform', 'linux/amd64', '-f', 'toolbox.Dockerfile', '-t', 'us-central1-docker.pkg.dev/itinera-genai/itinera/toolbox:latest', '.']
+images:
+- 'us-central1-docker.pkg.dev/itinera-genai/itinera/toolbox:latest'
