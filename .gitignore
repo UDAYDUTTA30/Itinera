@@ -6,3 +6,6 @@ __pycache__
 *.pyc
 node_modules
 .DS_Store
+toolbox/toolbox
+*.bin
+toolbox/
