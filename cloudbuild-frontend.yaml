@@ -1,0 +1,11 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: [
+    'build',
+    '-t', 'us-central1-docker.pkg.dev/itinera-genai/itinera/frontend:latest',
+    '--build-arg', 'VITE_BACKEND_URL=https://itinera-backend-662889849418.us-central1.run.app',
+    '.'
+  ]
+  dir: 'frontend'
+images:
+- 'us-central1-docker.pkg.dev/itinera-genai/itinera/frontend:latest'
