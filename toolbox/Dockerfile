@@ -9,4 +9,5 @@ RUN chmod +x /app/toolbox
 
 EXPOSE 8080
 
-ENTRYPOINT ["/app/toolbox", "--tools-file", "/app/tools.yaml", "--address", "0.0.0.0", "--port", "8080"]
+ENTRYPOINT ["/app/toolbox"]
+CMD ["--tools-file", "/app/tools.yaml", "--address", "0.0.0.0", "--port", "8080"]

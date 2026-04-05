@@ -1,14 +1,11 @@
 sources:
   itinera-db:
-    kind: alloydb-postgres
-    project: itinera-genai
-    region: us-central1
-    cluster: itinera-cluster
-    instance: itinera-primary
-    database: itinera_db
-    user: postgres
-    password: Itinera@2026
-    ip_type: PUBLIC
+    kind: postgres
+    host: ep-calm-frost-amj7u80y.c-5.us-east-1.aws.neon.tech
+    port: 5432
+    database: neondb
+    user: neondb_owner
+    password: npg_g3fWoM7mjOJw
 tools:
   save-plan:
     kind: postgres-sql
@@ -28,6 +25,7 @@ tools:
         type: string
         description: The scores JSON as a string
     statement: |
+      INSERT INTO users (id) VALUES ($1) ON CONFLICT (id) DO NOTHING;
       INSERT INTO plans (user_id, query, intent, itinerary, scores)
       VALUES ($1, $2, '{}', $3::jsonb, $4::jsonb);
   get-past-plans:
