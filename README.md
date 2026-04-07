@@ -9,7 +9,7 @@
 
 ## What It Does
 
-Tell Itinera what you want — *"Plan a romantic dinner in Bandra, Mumbai, budget ₹3000 for two"* — and it returns a complete, timed itinerary with real venues, walking/transit directions, cost estimates, and score badges.
+Tell Itinera what you want — *"Plan a romantic dinner in Bandra, Mumbai, budget ₹3000 for two"* — and it returns a complete, timed itinerary with real venues, walking/transit directions, cost estimates, and score badges along with sentiment ratings.
 
 ---
 
